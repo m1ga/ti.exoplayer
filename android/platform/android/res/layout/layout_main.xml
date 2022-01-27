@@ -1,0 +1,15 @@
+<FrameLayout
+    android:background="#00ffffff"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <com.potyvideo.library.AndExoPlayerView
+        android:id="@+id/andExoPlayerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:andexo_play_when_ready="true"
+        app:andexo_show_controller="true"
+        app:andexo_resize_mode="Fit"/>
+</FrameLayout>
