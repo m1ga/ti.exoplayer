@@ -23,7 +23,7 @@ var win = Ti.UI.createWindow({});
 var exo = require("ti.exoplayer").createVideoPlayer({
 	width: 400,
 	height: 225,
-    url: "https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4"
+	url: "https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4"
 });
 
 var btn = Ti.UI.createButton({title:"pause", bottom: 0});
