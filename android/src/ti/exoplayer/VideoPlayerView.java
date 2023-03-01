@@ -4,7 +4,10 @@ import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import com.potyvideo.library.AndExoPlayerView;
+import com.potyvideo.library.globalInterfaces.AndExoPlayerListener;
 
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.titanium.proxy.TiViewProxy;
@@ -31,6 +34,48 @@ public class VideoPlayerView extends TiUIView {
         viewWrapper = inflater.inflate(resId_viewHolder, null);
         playerView = (AndExoPlayerView) viewWrapper.findViewById(resIdPublish);
         setNativeView(viewWrapper);
+
+        playerView.setAndExoPlayerListener(new AndExoPlayerListener() {
+            @Override
+            public void onExoPlayerStart() {
+
+            }
+
+            @Override
+            public void onExoPlayerFinished() {
+
+            }
+
+            @Override
+            public void onExoPlayerLoading() {
+
+            }
+
+            @Override
+            public void onExoPlayerError(@Nullable String s) {
+
+            }
+
+            @Override
+            public void onExoBuffering() {
+
+            }
+
+            @Override
+            public void onExoEnded() {
+
+            }
+
+            @Override
+            public void onExoIdle() {
+
+            }
+
+            @Override
+            public void onExoReady() {
+
+            }
+        });
     }
 
     @Override
