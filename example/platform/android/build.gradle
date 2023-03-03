@@ -1,8 +1,0 @@
-repositories {
-	google();
-	maven { url 'https://jitpack.io' }
-}
-
-dependencies {
-	implementation 'com.github.HamidrezaAmz:MagicalExoPlayer:3.0.5'
-}

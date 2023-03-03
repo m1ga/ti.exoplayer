@@ -1,37 +1,37 @@
-# Ti.Exoplayer - Audio/Video player for Android
+# ExoPlayer module for Titanium SDK
 
+Using Androids [ExoPlayer](https://exoplayer.dev/) to play audio and video streams.
+> ExoPlayer supports features not currently supported by Android’s MediaPlayer API, including DASH and SmoothStreaming adaptive playbacks
 
-Based on <a href="https://github.com/HamidrezaAmz/MagicalExoPlayer">MagicalExoPlayer</a> (Exoplayer 2.15.0)
+Based on ExoPlayer 2.18.3
 
-Supports Dash, HLS, MP4, MP3
+## Code
 
-## Installation
-
-add this to your `/app/platform/android/build.gradle`:
+```js
+import exoPlayer from 'ti.exoplayer';
+const exoView = exoPlayer.createExoPlayer();
 ```
-repositories {
-	google();
-	maven { url 'https://jitpack.io' }
-}
-```
+
+## Methods
+* play
+* stop
+
+## Properties
+* url
+
+## Events
+* playerState
+* metaData
+* seek
+
 
 ## Example
 
-```js
-var win = Ti.UI.createWindow({});
+Check the `example/app.js` for code.
 
-var exo = require("ti.exoplayer").createVideoPlayer({
-	width: 400,
-	height: 225,
-	url: "https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4"
-});
 
-var btn = Ti.UI.createButton({title:"pause", bottom: 0});
-var btn2 = Ti.UI.createButton({title:"play", bottom: 50});
+## Author
 
-win.add([exo,btn,btn2]);
+- Michael Gangolf ([@MichaelGangolf](https://twitter.com/MichaelGangolf) / [Web](http://migaweb.de))
 
-btn.addEventListener("click", function(){exo.pause();});
-btn2.addEventListener("click", function(){exo.play();});
-win.open();
-```
+<span class="badge-buymeacoffee"><a href="https://www.buymeacoffee.com/miga" title="donate"><img src="https://img.shields.io/badge/buy%20me%20a%20coke-donate-orange.svg" alt="Buy Me A Coke donate button" /></a></span>

@@ -2,17 +2,17 @@
 # this is your module manifest and used by Titanium
 # during compilation, packaging, distribution, etc.
 #
-version: 1.0.1
+version: 2.0.0
 apiversion: 4
 architectures: arm64-v8a armeabi-v7a x86 x86_64
 description: ti.exoplayer
 author: Michael Gangolf
 license: MIT
-copyright: Copyright (c) 2022 Michael Gangolf
+copyright: Copyright (c) 2023
 
 # these should not be edited
 name: ti.exoplayer
 moduleid: ti.exoplayer
-guid: db3c0183-5d57-4b8f-b2b4-1e990ce487d9
+guid: 6ffb08a2-a1b7-4602-9f83-a1973682ed34
 platform: android
-minsdk: 9.0.0
+minsdk: 11.0.0.GA

@@ -1,8 +1,4 @@
-repositories {
-	google();
-	maven { url 'https://jitpack.io' }
-}
 
 dependencies {
-	implementation 'com.github.HamidrezaAmz:MagicalExoPlayer:3.0.5'
+	implementation 'com.google.android.exoplayer:exoplayer:2.18.3'
 }
