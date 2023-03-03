@@ -4,7 +4,8 @@ const exoView = exoPlayer.createExoPlayer({
 	url: "http://listen.181fm.com/181-oldschool_128k.mp3",
 	width: 400,
 	height: 200,
-	top: 10
+	top: 10,
+	// audioOnly: true
 });
 const lbl = Ti.UI.createLabel({
 	top: 230,

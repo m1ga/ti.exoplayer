@@ -19,6 +19,7 @@ import com.google.android.exoplayer2.ui.StyledPlayerView;
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.proxy.TiViewProxy;
+import org.appcelerator.titanium.util.TiConvert;
 import org.appcelerator.titanium.view.TiUIView;
 
 public class ExoPlayerView extends TiUIView implements Player.Listener {
@@ -26,15 +27,19 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
     ExoPlayer player = null;
     String mediaUrl = "";
     Boolean isPlaying = false;
+    Boolean audioOnly = false;
 
     public ExoPlayerView(TiViewProxy proxy) {
         super(proxy);
 
-
         String pkgName = proxy.getActivity().getPackageName();
         Resources res = proxy.getActivity().getResources();
-
-        int resId_viewHolder = res.getIdentifier("player_view", "layout", pkgName);
+        int resId_viewHolder;
+        if (TiConvert.toBoolean(proxy.getProperty("audioOnly"), false)) {
+            resId_viewHolder = res.getIdentifier("audioplayer_view", "layout", pkgName);
+        } else {
+            resId_viewHolder = res.getIdentifier("player_view", "layout", pkgName);
+        }
         LayoutInflater inflater = LayoutInflater.from(proxy.getActivity());
         StyledPlayerView viewWrapper = (StyledPlayerView) inflater.inflate(resId_viewHolder, null);
         setNativeView(viewWrapper);

@@ -16,6 +16,8 @@ import org.appcelerator.titanium.view.TiUIView;
 
 @Kroll.proxy(creatableInModule = TiExoPlayerModule.class)
 public class ExoPlayerProxy extends TiViewProxy {
+    static boolean audioOnly = false;
+
     public ExoPlayerProxy() {
         super();
     }
@@ -39,6 +41,8 @@ public class ExoPlayerProxy extends TiViewProxy {
 
         if (options.containsKey("url")) {
             getView().setMediaItem(options.getString("url"));
+        } else if (options.containsKeyAndNotNull("audioOnly")) {
+            audioOnly = options.getBoolean("audioOnly");
         }
     }
 
@@ -46,14 +50,20 @@ public class ExoPlayerProxy extends TiViewProxy {
     public String getUrl() {
         return getView().mediaUrl;
     }
+
+    @Kroll.setProperty
+    public void setUrl(String url) {
+        getView().setMediaItem(url);
+    }
+
     @Kroll.getProperty
     public boolean isPlaying() {
         return getView().isPlaying;
     }
 
-    @Kroll.setProperty
-    public void setUrl(String url) {
-        getView().setMediaItem(url);
+    @Kroll.getProperty
+    public boolean audioOnly() {
+        return audioOnly;
     }
 
     @Kroll.method
