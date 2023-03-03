@@ -26,6 +26,7 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
     private static final String LCAT = "ExoPlayerProxy";
     ExoPlayer player = null;
     String mediaUrl = "";
+    Boolean isPlaying = false;
 
     public ExoPlayerView(TiViewProxy proxy) {
         super(proxy);
@@ -71,13 +72,13 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
         Log.i(LCAT, "State: " + playbackState);
         KrollDict kd = new KrollDict();
         if (playbackState == Player.STATE_BUFFERING) {
-            kd.put("state", "buffering");
+            kd.put("state", TiExoPlayerModule.STATE_BUFFERING);
         } else if (playbackState == Player.STATE_IDLE) {
-            kd.put("state", "idle");
+            kd.put("state", TiExoPlayerModule.STATE_IDLE);
         } else if (playbackState == Player.STATE_READY) {
-            kd.put("state", "ready");
+            kd.put("state", TiExoPlayerModule.STATE_READY);
         } else if (playbackState == Player.STATE_ENDED) {
-            kd.put("state", "ended");
+            kd.put("state", TiExoPlayerModule.STATE_ENDED);
         }
         fireEvent("playerState", kd);
     }
@@ -91,7 +92,8 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
     public void onIsPlayingChanged(boolean isPlaying) {
         Player.Listener.super.onIsPlayingChanged(isPlaying);
         KrollDict kd = new KrollDict();
-        kd.put("playing", isPlaying);
+        kd.put("state", TiExoPlayerModule.STATE_PLAYING);
+        this.isPlaying = isPlaying;
         fireEvent("playerState", kd);
     }
 

@@ -17,6 +17,12 @@ public class TiExoPlayerModule extends KrollModule {
         super();
     }
 
+    @Kroll.constant static final int STATE_IDLE = 1;
+    @Kroll.constant static final int STATE_BUFFERING = 2;
+    @Kroll.constant static final int STATE_READY = 3;
+    @Kroll.constant static final int STATE_ENDED = 4;
+    @Kroll.constant static final int STATE_PLAYING = 5;
+
     @Kroll.onAppCreate
     public static void onAppCreate(TiApplication app) {
     }

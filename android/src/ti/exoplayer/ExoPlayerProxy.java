@@ -46,6 +46,10 @@ public class ExoPlayerProxy extends TiViewProxy {
     public String getUrl() {
         return getView().mediaUrl;
     }
+    @Kroll.getProperty
+    public boolean isPlaying() {
+        return getView().isPlaying;
+    }
 
     @Kroll.setProperty
     public void setUrl(String url) {
