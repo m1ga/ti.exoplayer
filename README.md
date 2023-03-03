@@ -13,17 +13,17 @@ const exoView = exoPlayer.createExoPlayer();
 ```
 
 ## Methods
-* play()
-* stop()
+* <b>play()</b>
+* <b>stop()</b>
 
 ## Properties
-* url
-* isPlaying
+* <b>url</b>
+* <b>isPlaying</b>
 
 ## Events
-* playerState: state (on of the constants)
-* metaData: title, album
-* seek: position, oldPosition
+* <b>playerState</b>: state (on of the constants)
+* <b>metaData</b>: title, album, albumTitle, albumArtist
+* <b>seek</b>: position, oldPosition
 
 ## Constants
 

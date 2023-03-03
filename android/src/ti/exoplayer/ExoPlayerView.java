@@ -17,7 +17,6 @@ import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
 
 import org.appcelerator.kroll.KrollDict;
-import org.appcelerator.kroll.common.Log;
 import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.proxy.TiViewProxy;
 import org.appcelerator.titanium.view.TiUIView;
@@ -57,10 +56,13 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
 
             if (mediaMetadata.artist != null) kd.put("album", mediaMetadata.artist);
             if (mediaMetadata.title != null) kd.put("title", mediaMetadata.title);
-            if (mediaMetadata.albumTitle != null)
-                kd.put("albumTitle", mediaMetadata.albumTitle);
-            if (mediaMetadata.albumArtist != null)
-                kd.put("albumArtist", mediaMetadata.albumArtist);
+            if (mediaMetadata.albumTitle != null) kd.put("albumTitle", mediaMetadata.albumTitle);
+            if (mediaMetadata.albumArtist != null) kd.put("albumArtist", mediaMetadata.albumArtist);
+            if (mediaMetadata.artworkUri != null)
+                kd.put("artworkUrl", mediaMetadata.artworkUri.toString());
+            /*if (mediaMetadata.artworkData != null) {
+                kd.put("artwork", TiConvert.toBlob(mediaMetadata.artworkData));
+            }*/
 
             fireEvent("metaData", kd);
         }
@@ -69,7 +71,6 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
     @Override
     public void onPlaybackStateChanged(int playbackState) {
         Player.Listener.super.onPlaybackStateChanged(playbackState);
-        Log.i(LCAT, "State: " + playbackState);
         KrollDict kd = new KrollDict();
         if (playbackState == Player.STATE_BUFFERING) {
             kd.put("state", TiExoPlayerModule.STATE_BUFFERING);
