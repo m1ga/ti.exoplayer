@@ -7,48 +7,15 @@
  */
 package ti.exoplayer;
 
+import android.app.Activity;
+
 import org.appcelerator.kroll.KrollDict;
-import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.annotations.Kroll;
-import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiC;
-import org.appcelerator.kroll.common.Log;
-import org.appcelerator.kroll.common.TiConfig;
-import org.appcelerator.titanium.util.TiConvert;
 import org.appcelerator.titanium.proxy.TiViewProxy;
-import org.appcelerator.titanium.view.TiCompositeLayout;
-import org.appcelerator.titanium.view.TiCompositeLayout.LayoutArrangement;
 import org.appcelerator.titanium.view.TiUIView;
 
-import android.app.Activity;
-import android.content.res.Resources;
-import android.view.LayoutInflater;
-import android.view.View;
-
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.MediaMetadata;
-import com.google.android.exoplayer2.MetadataRetriever;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.source.TrackGroup;
-import com.google.android.exoplayer2.source.TrackGroupArray;
-import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.ui.StyledPlayerView;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-
-
-// This proxy can be created by calling TiExo.createExample({message: "hello world"})
 @Kroll.proxy(creatableInModule = TiExoPlayerModule.class)
 public class ExoPlayerProxy extends TiViewProxy {
-    // Standard Debugging variables
-    private static final String LCAT = "ExoPlayerProxy";
-    private static final boolean DBG = TiConfig.LOGD;
-    ExoPlayer player = null;
-    String mediaUrl = "";
-
-    // Constructor
     public ExoPlayerProxy() {
         super();
     }
@@ -73,6 +40,11 @@ public class ExoPlayerProxy extends TiViewProxy {
         if (options.containsKey("url")) {
             getView().setMediaItem(options.getString("url"));
         }
+    }
+
+    @Kroll.getProperty
+    public String getUrl() {
+        return getView().mediaUrl;
     }
 
     @Kroll.setProperty

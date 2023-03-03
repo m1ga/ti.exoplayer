@@ -7,25 +7,12 @@
  */
 package ti.exoplayer;
 
-import com.google.android.exoplayer2.ExoPlayer;
-
 import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.annotations.Kroll;
-
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.kroll.common.Log;
-import org.appcelerator.kroll.common.TiConfig;
-
 
 @Kroll.module(name = "TiExoplayer", id = "ti.exoplayer")
 public class TiExoPlayerModule extends KrollModule {
-
-    // Standard Debugging variables
-    private static final String LCAT = "TiExoplayerModule";
-    private static final boolean DBG = TiConfig.LOGD;
-
-
-
     public TiExoPlayerModule() {
         super();
     }
@@ -33,6 +20,4 @@ public class TiExoPlayerModule extends KrollModule {
     @Kroll.onAppCreate
     public static void onAppCreate(TiApplication app) {
     }
-
-
 }
