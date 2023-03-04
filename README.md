@@ -13,16 +13,16 @@ const exoView = exoPlayer.createExoPlayer();
 ```
 
 ## Methods
-* <b>play()</b>
-* <b>pause()</b>
-* <b>stop()</b>
-* <b>release()</b>
-* <b>seekTo(ms)</b>
+* <b>play()</b>: plays the audio/video file
+* <b>pause()</b>: pauses the stream
+* <b>stop()</b>: stops the stream
+* <b>release()</b>: releases the player. Run this when you don't need it anymore
+* <b>seekTo(ms)</b>: seek to a position in the file
 
 ## Properties
 * <b>audioOnly</b> (boolean, creation only): player won't create a "video surface" and safes resources.
-* <b>url</b>
-* <b>isPlaying</b>
+* <b>url</b> (String): the URL of the audio/video file
+* <b>isPlaying</b> (boolean): current play status
 
 ## Events
 * <b>playerState</b>: state (on of the constants)
