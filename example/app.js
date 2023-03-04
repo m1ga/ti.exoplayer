@@ -22,7 +22,13 @@ const btnVideo = Ti.UI.createButton({
 });
 const btnStop = Ti.UI.createButton({
 	title: "stop",
-	bottom: 10
+	bottom: 10,
+	right: 10
+});
+const btnPause = Ti.UI.createButton({
+	title: "pause",
+	bottom: 10,
+	left: 10
 });
 
 btnStream.addEventListener("click", function(e) {
@@ -31,6 +37,9 @@ btnStream.addEventListener("click", function(e) {
 });
 btnStop.addEventListener("click", function(e) {
 	exoView.stop();
+});
+btnPause.addEventListener("click", function(e) {
+	exoView.pause();
 });
 
 btnVideo.addEventListener("click", function(e) {
@@ -60,5 +69,5 @@ exoView.addEventListener("playerState", function(e) {
 
 win.addEventListener("open", function() {});
 
-win.add([exoView, lbl, btnVideo, btnStream, btnStop]);
+win.add([exoView, lbl, btnVideo, btnStream, btnStop, btnPause]);
 win.open();

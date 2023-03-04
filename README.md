@@ -14,6 +14,7 @@ const exoView = exoPlayer.createExoPlayer();
 
 ## Methods
 * <b>play()</b>
+* <b>pause()</b>
 * <b>stop()</b>
 
 ## Properties

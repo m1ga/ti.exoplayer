@@ -75,4 +75,9 @@ public class ExoPlayerProxy extends TiViewProxy {
     public void stop() {
         getView().stop();
     }
+
+    @Kroll.method
+    public void pause() {
+        getView().pause();
+    }
 }

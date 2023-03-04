@@ -133,4 +133,8 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
     public void stop() {
         player.stop();
     }
+
+    public void pause() {
+        player.pause();
+    }
 }
