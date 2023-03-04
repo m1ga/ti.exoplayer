@@ -16,6 +16,7 @@ const exoView = exoPlayer.createExoPlayer();
 * <b>play()</b>
 * <b>pause()</b>
 * <b>stop()</b>
+* <b>release()</b>
 
 ## Properties
 * <b>audioOnly</b> (boolean, creation only): player won't create a "video surface" and safes resources.
