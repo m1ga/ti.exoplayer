@@ -13,11 +13,11 @@ const lbl = Ti.UI.createLabel({
 	text: "-"
 })
 const btnStream = Ti.UI.createButton({
-	title: "play audio stream",
+	title: "load audio stream",
 	bottom: 50
 });
 const btnVideo = Ti.UI.createButton({
-	title: "play video",
+	title: "load video",
 	bottom: 90
 });
 const btnStop = Ti.UI.createButton({
@@ -30,6 +30,10 @@ const btnPause = Ti.UI.createButton({
 	bottom: 10,
 	left: 10
 });
+const btnPlay = Ti.UI.createButton({
+	title: "play",
+	bottom: 10,
+});
 
 btnStream.addEventListener("click", function(e) {
 	exoView.url = "http://listen.181fm.com/181-oldschool_128k.mp3";
@@ -40,6 +44,9 @@ btnStop.addEventListener("click", function(e) {
 });
 btnPause.addEventListener("click", function(e) {
 	exoView.pause();
+});
+btnPlay.addEventListener("click", function(e) {
+	exoView.play();
 });
 
 btnVideo.addEventListener("click", function(e) {
@@ -69,5 +76,5 @@ exoView.addEventListener("playerState", function(e) {
 
 win.addEventListener("open", function() {});
 
-win.add([exoView, lbl, btnVideo, btnStream, btnStop, btnPause]);
+win.add([exoView, lbl, btnVideo, btnStream, btnStop, btnPause, btnPlay]);
 win.open();

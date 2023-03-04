@@ -27,7 +27,7 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
     ExoPlayer player = null;
     String mediaUrl = "";
     Boolean isPlaying = false;
-    Boolean audioOnly = false;
+    Boolean shouldPrepare = false;
 
     public ExoPlayerView(TiViewProxy proxy) {
         super(proxy);
@@ -123,15 +123,20 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
             MediaItem mediaItem = MediaItem.fromUri(mediaUrl);
             player.setMediaItem(mediaItem);
             player.prepare();
+            shouldPrepare = false;
         }
     }
 
     public void play() {
+        if (shouldPrepare) {
+            player.prepare();
+        }
         player.play();
     }
 
     public void stop() {
         player.stop();
+        shouldPrepare = true;
     }
 
     public void pause() {
