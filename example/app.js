@@ -20,19 +20,26 @@ const btnVideo = Ti.UI.createButton({
 	title: "load video",
 	bottom: 90
 });
+const bottomMenu = Ti.UI.createView({
+	bottom: 10,
+	layout: "horizontal",
+	height: 40,
+	width: Ti.UI.SIZE
+})
 const btnStop = Ti.UI.createButton({
 	title: "stop",
-	bottom: 10,
-	right: 10
+	right: 2
 });
 const btnPause = Ti.UI.createButton({
 	title: "pause",
-	bottom: 10,
-	left: 10
+	right: 2
 });
 const btnPlay = Ti.UI.createButton({
 	title: "play",
-	bottom: 10,
+	right: 2
+});
+const btnIsPlaying = Ti.UI.createButton({
+	title: "is playing?"
 });
 
 btnStream.addEventListener("click", function(e) {
@@ -47,6 +54,9 @@ btnPause.addEventListener("click", function(e) {
 });
 btnPlay.addEventListener("click", function(e) {
 	exoView.play();
+});
+btnIsPlaying.addEventListener("click", function(e) {
+	alert("is playing? " + exoView.playing);
 });
 
 btnVideo.addEventListener("click", function(e) {
@@ -76,5 +86,6 @@ exoView.addEventListener("playerState", function(e) {
 
 win.addEventListener("open", function() {});
 
-win.add([exoView, lbl, btnVideo, btnStream, btnStop, btnPause, btnPlay]);
+bottomMenu.add([btnPlay, btnStop, btnPause, btnIsPlaying]);
+win.add([exoView, lbl, btnVideo, btnStream, bottomMenu]);
 win.open();

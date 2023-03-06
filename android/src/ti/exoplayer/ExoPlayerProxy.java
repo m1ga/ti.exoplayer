@@ -57,7 +57,7 @@ public class ExoPlayerProxy extends TiViewProxy {
     }
 
     @Kroll.getProperty
-    public boolean isPlaying() {
+    public boolean playing() {
         return getView().isPlaying;
     }
 

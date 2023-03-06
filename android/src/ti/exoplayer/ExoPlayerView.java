@@ -26,8 +26,8 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
     private static final String LCAT = "ExoPlayerProxy";
     ExoPlayer player = null;
     String mediaUrl = "";
-    Boolean isPlaying = false;
-    Boolean shouldPrepare = false;
+    boolean isPlaying = false;
+    boolean shouldPrepare = false;
 
     public ExoPlayerView(TiViewProxy proxy) {
         super(proxy);
