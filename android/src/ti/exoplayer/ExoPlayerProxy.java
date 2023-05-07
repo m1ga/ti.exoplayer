@@ -90,4 +90,9 @@ public class ExoPlayerProxy extends TiViewProxy {
     public void seekTo(int value) {
         getView().seekTo(value);
     }
+
+    @Kroll.getProperty
+    public long currentPosition() {
+        return getView().currentPosition();
+    }
 }

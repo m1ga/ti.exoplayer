@@ -14,6 +14,7 @@ import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.MediaMetadata;
 import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
 
 import org.appcelerator.kroll.KrollDict;
@@ -145,6 +146,10 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
 
     public void release() {
         player.release();
+    }
+    public long currentPosition() {
+        long currentPosition = player.getCurrentPosition();
+        return currentPosition;
     }
 
     public void seekTo(int value) {
