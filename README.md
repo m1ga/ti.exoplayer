@@ -3,7 +3,7 @@
 Using Androids [ExoPlayer](https://exoplayer.dev/) to play audio and video streams.
 > ExoPlayer supports features not currently supported by Android’s MediaPlayer API, including DASH and SmoothStreaming adaptive playbacks
 
-Based on ExoPlayer 2.18.3
+Based on ExoPlayer 2.18.6
 
 ## Code
 
@@ -23,6 +23,8 @@ const exoView = exoPlayer.createExoPlayer();
 * <b>audioOnly</b> (boolean, creation only): player won't create a "video surface" and safes resources.
 * <b>url</b> (String): the URL of the audio/video file
 * <b>playing</b> (boolean): current play status
+* <b>currentPosition</b> (int): current position
+* <b>duration</b> (int): duration (-1 if unavailable)
 
 ## Events
 * <b>playerState</b>: state (on of the constants)
