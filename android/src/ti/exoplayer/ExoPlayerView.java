@@ -10,6 +10,7 @@ package ti.exoplayer;
 import android.content.res.Resources;
 import android.view.LayoutInflater;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.MediaMetadata;
@@ -150,6 +151,15 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
     public long currentPosition() {
         long currentPosition = player.getCurrentPosition();
         return currentPosition;
+    }
+
+    public long duration() {
+        long duration = player.getDuration();
+        if (duration == C.TIME_UNSET) {
+            return -1;
+        } else {
+            return player.getDuration();
+        }
     }
 
     public void seekTo(int value) {
