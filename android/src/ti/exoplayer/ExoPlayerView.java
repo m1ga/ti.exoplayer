@@ -10,13 +10,12 @@ package ti.exoplayer;
 import android.content.res.Resources;
 import android.view.LayoutInflater;
 
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.MediaMetadata;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.Timeline;
-import com.google.android.exoplayer2.ui.StyledPlayerView;
+import androidx.media3.common.C;
+import androidx.media3.common.MediaItem;
+import androidx.media3.common.MediaMetadata;
+import androidx.media3.common.Player;
+import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.ui.PlayerView;
 
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.titanium.TiApplication;
@@ -43,7 +42,7 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
             resId_viewHolder = res.getIdentifier("player_view", "layout", pkgName);
         }
         LayoutInflater inflater = LayoutInflater.from(proxy.getActivity());
-        StyledPlayerView viewWrapper = (StyledPlayerView) inflater.inflate(resId_viewHolder, null);
+        PlayerView viewWrapper = (PlayerView) inflater.inflate(resId_viewHolder, null);
         setNativeView(viewWrapper);
         player = new ExoPlayer.Builder(TiApplication.getAppCurrentActivity()).build();
         viewWrapper.setPlayer(player);

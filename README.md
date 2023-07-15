@@ -1,9 +1,9 @@
 # ExoPlayer module for Titanium SDK
 
-Using Androids [ExoPlayer](https://exoplayer.dev/) to play audio and video streams.
+Using Androids Media3 [ExoPlayer](https://developer.android.com/guide/topics/media/exoplayer) to play audio and video streams.
 > ExoPlayer supports features not currently supported by Android’s MediaPlayer API, including DASH and SmoothStreaming adaptive playbacks
 
-Based on ExoPlayer 2.18.6
+Based on Media3 ExoPlayer 1.1.0. [Suppored media formats](https://developer.android.com/guide/topics/media/media-formats)
 
 ## Code
 
