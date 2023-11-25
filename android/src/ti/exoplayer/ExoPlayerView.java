@@ -10,11 +10,16 @@ package ti.exoplayer;
 import android.content.res.Resources;
 import android.view.LayoutInflater;
 
+import androidx.annotation.OptIn;
 import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MediaMetadata;
 import androidx.media3.common.Player;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.exoplayer.DefaultLoadControl;
 import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.LoadControl;
+import androidx.media3.exoplayer.upstream.DefaultAllocator;
 import androidx.media3.ui.PlayerView;
 
 import org.appcelerator.kroll.KrollDict;
@@ -30,7 +35,7 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
     boolean isPlaying = false;
     boolean shouldPrepare = false;
 
-    public ExoPlayerView(TiViewProxy proxy) {
+    public @OptIn(markerClass = UnstableApi.class) ExoPlayerView(TiViewProxy proxy) {
         super(proxy);
 
         String pkgName = proxy.getActivity().getPackageName();
@@ -44,7 +49,31 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
         LayoutInflater inflater = LayoutInflater.from(proxy.getActivity());
         PlayerView viewWrapper = (PlayerView) inflater.inflate(resId_viewHolder, null);
         setNativeView(viewWrapper);
-        player = new ExoPlayer.Builder(TiApplication.getAppCurrentActivity()).build();
+
+        // buffer in ms
+        int MIN_BUFFER_DURATION = TiConvert.toInt(proxy.getProperty("minBufferDuration"), 3000);
+        int MAX_BUFFER_DURATION = TiConvert.toInt(proxy.getProperty("maxBufferDuration"), 8000);
+        int MIN_PLAYBACK_RESUME_BUFFER = TiConvert.toInt(proxy.getProperty("minResumeBuffer"), 1500);
+        int MIN_PLAYBACK_START_BUFFER = TiConvert.toInt(proxy.getProperty("minStartBuffer"), 500);
+        int TARGET_BUFFER_BYTES = TiConvert.toInt(proxy.getProperty("targetBufferBytes"), -1);
+
+        LoadControl loadControl;
+        if (TARGET_BUFFER_BYTES > -1) {
+            loadControl = new DefaultLoadControl.Builder()
+                    .setAllocator(new DefaultAllocator(true, 16))
+                    .setBufferDurationsMs(MIN_BUFFER_DURATION, MAX_BUFFER_DURATION, MIN_PLAYBACK_START_BUFFER, MIN_PLAYBACK_RESUME_BUFFER)
+                    .setTargetBufferBytes(-1)
+                    .setPrioritizeTimeOverSizeThresholds(true)
+                    .build();
+        } else {
+            loadControl = new DefaultLoadControl.Builder()
+                    .setAllocator(new DefaultAllocator(true, 16))
+                    .setTargetBufferBytes(TARGET_BUFFER_BYTES)
+                    .setPrioritizeTimeOverSizeThresholds(true)
+                    .build();
+        }
+
+        player = new ExoPlayer.Builder(TiApplication.getAppCurrentActivity()).setLoadControl(loadControl).build();
         viewWrapper.setPlayer(player);
 
         if (!mediaUrl.equals("")) {
@@ -147,6 +176,7 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
     public void release() {
         player.release();
     }
+
     public long currentPosition() {
         long currentPosition = player.getCurrentPosition();
         return currentPosition;

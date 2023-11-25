@@ -25,6 +25,11 @@ const exoView = exoPlayer.createExoPlayer();
 * <b>playing</b> (boolean): current play status
 * <b>currentPosition</b> (int): current position
 * <b>duration</b> (int): duration (-1 if unavailable)
+* <b>minBufferDuration</b> (int): min buffer duration in ms (default: 3000)
+* <b>maxBufferDuration</b> (int): max buffer duration in ms (default: 8000)
+* <b>minResumeBuffer</b> (int): min playback resume buffer duration in ms (default: 1500)
+* <b>minStartBuffer</b> (int): min playback start buffer duration in ms  (default: 500)
+* <b>targetBufferBytes</b> (int):  target buffer size in bytes. Only used if >-1 and other the other buffer durations will be ignored (default: -1)
 
 ## Events
 * <b>playerState</b>: state (on of the constants)
