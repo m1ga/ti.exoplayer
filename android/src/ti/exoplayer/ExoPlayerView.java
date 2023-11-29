@@ -58,7 +58,7 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
         int TARGET_BUFFER_BYTES = TiConvert.toInt(proxy.getProperty("targetBufferBytes"), -1);
 
         LoadControl loadControl;
-        if (TARGET_BUFFER_BYTES > -1) {
+        if (TARGET_BUFFER_BYTES == -1) {
             loadControl = new DefaultLoadControl.Builder()
                     .setAllocator(new DefaultAllocator(true, 16))
                     .setBufferDurationsMs(MIN_BUFFER_DURATION, MAX_BUFFER_DURATION, MIN_PLAYBACK_START_BUFFER, MIN_PLAYBACK_RESUME_BUFFER)
@@ -69,7 +69,7 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
             loadControl = new DefaultLoadControl.Builder()
                     .setAllocator(new DefaultAllocator(true, 16))
                     .setTargetBufferBytes(TARGET_BUFFER_BYTES)
-                    .setPrioritizeTimeOverSizeThresholds(true)
+                    .setPrioritizeTimeOverSizeThresholds(false)
                     .build();
         }
 

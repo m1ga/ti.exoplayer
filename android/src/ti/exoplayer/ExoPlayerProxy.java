@@ -100,4 +100,5 @@ public class ExoPlayerProxy extends TiViewProxy {
     public long duration() {
         return getView().duration();
     }
+
 }
