@@ -16,9 +16,13 @@ import androidx.media3.common.MediaItem;
 import androidx.media3.common.MediaMetadata;
 import androidx.media3.common.Player;
 import androidx.media3.common.util.UnstableApi;
+import androidx.media3.datasource.DefaultDataSource;
+import androidx.media3.datasource.DefaultHttpDataSource;
+import androidx.media3.datasource.HttpDataSource;
 import androidx.media3.exoplayer.DefaultLoadControl;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.LoadControl;
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.exoplayer.upstream.DefaultAllocator;
 import androidx.media3.ui.PlayerView;
 
@@ -27,6 +31,7 @@ import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.proxy.TiViewProxy;
 import org.appcelerator.titanium.util.TiConvert;
 import org.appcelerator.titanium.view.TiUIView;
+
 
 public class ExoPlayerView extends TiUIView implements Player.Listener {
     private static final String LCAT = "ExoPlayerProxy";
@@ -73,7 +78,18 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
                     .build();
         }
 
-        player = new ExoPlayer.Builder(TiApplication.getAppCurrentActivity()).setLoadControl(loadControl).build();
+        if (TiConvert.toBoolean(proxy.getProperty("crossProtocolRedirects"), false)) {
+            HttpDataSource.Factory httpDataSourceFactory =
+                    new DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(true);
+            DefaultDataSource.Factory dataSourceFactory =
+                    new DefaultDataSource.Factory(TiApplication.getAppCurrentActivity(), httpDataSourceFactory);
+            player = new ExoPlayer.Builder(TiApplication.getAppCurrentActivity())
+                    .setMediaSourceFactory(new DefaultMediaSourceFactory(dataSourceFactory))
+                    .setLoadControl(loadControl).build();
+        } else {
+            player = new ExoPlayer.Builder(TiApplication.getAppCurrentActivity())
+                    .setLoadControl(loadControl).build();
+        }
         viewWrapper.setPlayer(player);
 
         if (!mediaUrl.equals("")) {

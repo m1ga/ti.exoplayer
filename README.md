@@ -30,6 +30,7 @@ const exoView = exoPlayer.createExoPlayer();
 * <b>minResumeBuffer</b> (int): min playback resume buffer duration in ms (default: 1500)
 * <b>minStartBuffer</b> (int): min playback start buffer duration in ms  (default: 500)
 * <b>targetBufferBytes</b> (int):  target buffer size in bytes. Only used if >-1 and other the other buffer durations will be ignored (default: -1)
+* <b>crossProtocolRedirects</b> (boolean):  Allow cross platform redirects (default: false)
 
 ## Events
 * <b>playerState</b>: state (on of the constants)
