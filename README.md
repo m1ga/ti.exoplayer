@@ -3,7 +3,8 @@
 Using Androids Media3 [ExoPlayer](https://developer.android.com/guide/topics/media/exoplayer) to play audio and video streams.
 > ExoPlayer supports features not currently supported by Android’s MediaPlayer API, including DASH and SmoothStreaming adaptive playbacks
 
-Based on Media3 ExoPlayer 1.1.0. [Suppored media formats](https://developer.android.com/guide/topics/media/media-formats)
+Based on Media3 ExoPlayer 1.1.1. [Suppored media formats](https://developer.android.com/guide/topics/media/media-formats)
+Latest module version needs Titanium SDK 12.6.x+
 
 ## Code
 
