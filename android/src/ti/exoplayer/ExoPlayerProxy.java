@@ -16,7 +16,6 @@ import org.appcelerator.titanium.view.TiUIView;
 
 @Kroll.proxy(creatableInModule = TiExoPlayerModule.class)
 public class ExoPlayerProxy extends TiViewProxy {
-    static boolean audioOnly = false;
 
     public ExoPlayerProxy() {
         super();
@@ -34,17 +33,14 @@ public class ExoPlayerProxy extends TiViewProxy {
         return (ExoPlayerView) getOrCreateView();
     }
 
-    // Handle creation options
     @Override
     public void handleCreationDict(KrollDict options) {
         super.handleCreationDict(options);
-
-        if (options.containsKey("url")) {
-            getView().setMediaItem(options.getString("url"));
-        } else if (options.containsKeyAndNotNull("audioOnly")) {
-            audioOnly = options.getBoolean("audioOnly");
-        }
+        // All initialization is handled inside ExoPlayerView constructor
+        // reading from proxy.getProperty() to keep a single source of truth
     }
+
+    // ─── url ──────────────────────────────────────────────────────────────────
 
     @Kroll.getProperty
     public String getUrl() {
@@ -56,19 +52,114 @@ public class ExoPlayerProxy extends TiViewProxy {
         getView().setMediaItem(url);
     }
 
+    // ─── playing (read-only) ──────────────────────────────────────────────────
+
     @Kroll.getProperty
-    public boolean playing() {
+    public boolean getPlaying() {
         return getView().isPlaying;
     }
 
+    // ─── scalingMode ─────────────────────────────────────────────────────────
+
     @Kroll.getProperty
-    public boolean audioOnly() {
-        return audioOnly;
+    public int getScalingMode() {
+        return getView().getScalingMode();
     }
+
+    @Kroll.setProperty
+    public void setScalingMode(int mode) {
+        getView().setScalingMode(mode);
+    }
+
+    // ─── volume ───────────────────────────────────────────────────────────────
+
+    @Kroll.getProperty
+    public float getVolume() {
+        return getView().getVolume();
+    }
+
+    @Kroll.setProperty
+    public void setVolume(float vol) {
+        getView().setVolume(vol);
+    }
+
+    // ─── muted ────────────────────────────────────────────────────────────────
+
+    @Kroll.getProperty
+    public boolean getMuted() {
+        return getView().getMuted();
+    }
+
+    @Kroll.setProperty
+    public void setMuted(boolean muted) {
+        getView().setMuted(muted);
+    }
+
+    // ─── playbackSpeed ────────────────────────────────────────────────────────
+
+    @Kroll.getProperty
+    public float getPlaybackSpeed() {
+        return getView().getPlaybackSpeed();
+    }
+
+    @Kroll.setProperty
+    public void setPlaybackSpeed(float speed) {
+        getView().setPlaybackSpeed(speed);
+    }
+
+    // ─── repeat ───────────────────────────────────────────────────────────────
+
+    @Kroll.getProperty
+    public boolean getRepeat() {
+        return getView().getRepeat();
+    }
+
+    @Kroll.setProperty
+    public void setRepeat(boolean repeat) {
+        getView().setRepeat(repeat);
+    }
+
+    // ─── showControls ─────────────────────────────────────────────────────────
+
+    @Kroll.getProperty
+    public boolean getShowControls() {
+        return getView().getShowControls();
+    }
+
+    @Kroll.setProperty
+    public void setShowControls(boolean show) {
+        getView().setShowControls(show);
+    }
+
+    // ─── audioOnly (read-only, set at creation) ───────────────────────────────
+
+    @Kroll.getProperty
+    public boolean getAudioOnly() {
+        return false; // resolved inside view via proxy.getProperty("audioOnly")
+    }
+
+    // ─── currentPosition / duration (read-only) ───────────────────────────────
+
+    @Kroll.getProperty
+    public long getCurrentPosition() {
+        return getView().currentPosition();
+    }
+
+    @Kroll.getProperty
+    public long getDuration() {
+        return getView().duration();
+    }
+
+    // ─── Methods ──────────────────────────────────────────────────────────────
 
     @Kroll.method
     public void play() {
         getView().play();
+    }
+
+    @Kroll.method
+    public void pause() {
+        getView().pause();
     }
 
     @Kroll.method
@@ -82,23 +173,7 @@ public class ExoPlayerProxy extends TiViewProxy {
     }
 
     @Kroll.method
-    public void pause() {
-        getView().pause();
-    }
-
-    @Kroll.method
     public void seekTo(int value) {
         getView().seekTo(value);
     }
-
-    @Kroll.getProperty
-    public long currentPosition() {
-        return getView().currentPosition();
-    }
-
-    @Kroll.getProperty
-    public long duration() {
-        return getView().duration();
-    }
-
 }

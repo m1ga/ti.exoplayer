@@ -1,6 +1,12 @@
+repositories {
+    google()
+    mavenCentral()
+}
+
 dependencies {
-	implementation "androidx.media3:media3-exoplayer:1.8.0"
-	implementation "androidx.media3:media3-exoplayer-dash:1.8.0"
-	implementation "androidx.media3:media3-exoplayer-hls:1.8.0"
-	implementation "androidx.media3:media3-ui:1.8.0"
+    def media3_version = "1.9.2"
+    implementation "androidx.media3:media3-exoplayer:$media3_version"
+    implementation "androidx.media3:media3-exoplayer-dash:$media3_version"
+    implementation "androidx.media3:media3-exoplayer-hls:$media3_version"
+    implementation "androidx.media3:media3-ui:$media3_version"
 }

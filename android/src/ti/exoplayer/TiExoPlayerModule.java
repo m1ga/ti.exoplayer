@@ -17,11 +17,17 @@ public class TiExoPlayerModule extends KrollModule {
         super();
     }
 
+    // Playback states
     @Kroll.constant static final int STATE_IDLE = 1;
     @Kroll.constant static final int STATE_BUFFERING = 2;
     @Kroll.constant static final int STATE_READY = 3;
     @Kroll.constant static final int STATE_ENDED = 4;
     @Kroll.constant static final int STATE_PLAYING = 5;
+
+    // Scaling modes
+    @Kroll.constant static final int SCALING_MODE_FIT = 0;   // RESIZE_MODE_FIT
+    @Kroll.constant static final int SCALING_MODE_FILL = 3;  // RESIZE_MODE_FILL (stretch)
+    @Kroll.constant static final int SCALING_MODE_CROP = 4;  // RESIZE_MODE_ZOOM (crop)
 
     @Kroll.onAppCreate
     public static void onAppCreate(TiApplication app) {

@@ -9,6 +9,8 @@ package ti.exoplayer;
 
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 
 import androidx.annotation.NonNull;
@@ -16,13 +18,12 @@ import androidx.annotation.OptIn;
 import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MediaMetadata;
+import androidx.media3.common.PlaybackException;
+import androidx.media3.common.PlaybackParameters;
 import androidx.media3.common.Player;
 import androidx.media3.common.util.UnstableApi;
-import androidx.media3.datasource.DataSource;
 import androidx.media3.datasource.DefaultDataSource;
-import androidx.media3.datasource.DefaultDataSourceFactory;
 import androidx.media3.datasource.DefaultHttpDataSource;
-import androidx.media3.datasource.HttpDataSource;
 import androidx.media3.exoplayer.DefaultLoadControl;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.LoadControl;
@@ -36,16 +37,37 @@ import org.appcelerator.titanium.proxy.TiViewProxy;
 import org.appcelerator.titanium.util.TiConvert;
 import org.appcelerator.titanium.view.TiUIView;
 
+import java.util.HashMap;
+import java.util.Map;
 
+@OptIn(markerClass = UnstableApi.class)
 public class ExoPlayerView extends TiUIView implements Player.Listener {
-    private static final String LCAT = "ExoPlayerProxy";
+    private static final String LCAT = "ExoPlayerView";
+    private static final int PROGRESS_INTERVAL_MS = 250;
+
     ExoPlayer player = null;
+    PlayerView playerView = null;
     String mediaUrl = "";
     boolean isPlaying = false;
     boolean shouldPrepare = false;
 
+    // Progress tracking
+    private final Handler progressHandler = new Handler(Looper.getMainLooper());
+    private final Runnable progressRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (player != null && isPlaying) {
+                KrollDict kd = new KrollDict();
+                kd.put("position", player.getCurrentPosition());
+                kd.put("duration", player.getDuration() == C.TIME_UNSET ? -1 : player.getDuration());
+                fireEvent("progress", kd);
+                progressHandler.postDelayed(this, PROGRESS_INTERVAL_MS);
+            }
+        }
+    };
+
     @SuppressLint("DiscouragedApi")
-    public @OptIn(markerClass = UnstableApi.class) ExoPlayerView(TiViewProxy proxy) {
+    public ExoPlayerView(TiViewProxy proxy) {
         super(proxy);
 
         String pkgName = proxy.getActivity().getPackageName();
@@ -57,10 +79,10 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
             resId_viewHolder = res.getIdentifier("player_view", "layout", pkgName);
         }
         LayoutInflater inflater = LayoutInflater.from(proxy.getActivity());
-        PlayerView viewWrapper = (PlayerView) inflater.inflate(resId_viewHolder, null);
-        setNativeView(viewWrapper);
+        playerView = (PlayerView) inflater.inflate(resId_viewHolder, null);
+        setNativeView(playerView);
 
-        // buffer in ms
+        // Buffer settings
         int MIN_BUFFER_DURATION = TiConvert.toInt(proxy.getProperty("minBufferDuration"), 3000);
         int MAX_BUFFER_DURATION = TiConvert.toInt(proxy.getProperty("maxBufferDuration"), 8000);
         int MIN_PLAYBACK_RESUME_BUFFER = TiConvert.toInt(proxy.getProperty("minResumeBuffer"), 1500);
@@ -83,48 +105,90 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
                     .build();
         }
 
-
-        if (TiConvert.toBoolean(proxy.getProperty("crossProtocolRedirects"), false)) {
-            HttpDataSource.Factory httpDataSourceFactory =
-                    new DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(true);
-            DefaultDataSource.Factory dataSourceFactory =
-                    new DefaultDataSource.Factory(TiApplication.getAppCurrentActivity(), httpDataSourceFactory);
-            player = new ExoPlayer.Builder(TiApplication.getAppCurrentActivity())
-                    .setMediaSourceFactory(new DefaultMediaSourceFactory(dataSourceFactory))
-                    .setLoadControl(loadControl).build();
-        } else {
-            ExoPlayer.Builder playerBuilder = new ExoPlayer.Builder(TiApplication.getAppCurrentActivity());
-            if (proxy.hasPropertyAndNotNull("userAgent")) {
-                DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(TiApplication.getAppCurrentActivity().getApplicationContext(),
-                        TiConvert.toString(proxy.getProperty("userAgent")));
-                playerBuilder.setMediaSourceFactory(new DefaultMediaSourceFactory(dataSourceFactory));
+        // HTTP headers
+        HashMap<String, String> headers = null;
+        if (proxy.hasPropertyAndNotNull("headers")) {
+            KrollDict rawHeaders = (KrollDict) proxy.getProperty("headers");
+            headers = new HashMap<>();
+            for (Map.Entry<String, Object> entry : rawHeaders.entrySet()) {
+                headers.put(entry.getKey(), TiConvert.toString(entry.getValue()));
             }
-            player = playerBuilder.setLoadControl(loadControl).build();
         }
-        viewWrapper.setPlayer(player);
 
-        if (!mediaUrl.isEmpty()) {
-            setMediaItem(mediaUrl);
+        // Build HttpDataSource with optional headers and userAgent
+        DefaultHttpDataSource.Factory httpFactory = new DefaultHttpDataSource.Factory();
+        if (proxy.hasPropertyAndNotNull("userAgent")) {
+            httpFactory.setUserAgent(TiConvert.toString(proxy.getProperty("userAgent")));
+        }
+        if (headers != null) {
+            httpFactory.setDefaultRequestProperties(headers);
+        }
+        if (TiConvert.toBoolean(proxy.getProperty("crossProtocolRedirects"), false)) {
+            httpFactory.setAllowCrossProtocolRedirects(true);
+        }
+
+        DefaultDataSource.Factory dataSourceFactory = new DefaultDataSource.Factory(
+                TiApplication.getAppCurrentActivity(), httpFactory);
+
+        player = new ExoPlayer.Builder(TiApplication.getAppCurrentActivity())
+                .setMediaSourceFactory(new DefaultMediaSourceFactory(dataSourceFactory))
+                .setLoadControl(loadControl)
+                .build();
+
+        playerView.setPlayer(player);
+
+        // showControls (default true)
+        boolean showControls = TiConvert.toBoolean(proxy.getProperty("showControls"), true);
+        playerView.setUseController(showControls);
+
+        // scalingMode (default FIT)
+        int scalingMode = TiConvert.toInt(proxy.getProperty("scalingMode"), TiExoPlayerModule.SCALING_MODE_FIT);
+        playerView.setResizeMode(scalingMode);
+
+        // volume
+        if (proxy.hasPropertyAndNotNull("volume")) {
+            float vol = (float) TiConvert.toDouble(proxy.getProperty("volume"));
+            player.setVolume(vol);
+        }
+
+        // muted
+        if (TiConvert.toBoolean(proxy.getProperty("muted"), false)) {
+            player.setVolume(0f);
+        }
+
+        // playbackSpeed
+        if (proxy.hasPropertyAndNotNull("playbackSpeed")) {
+            float speed = (float) TiConvert.toDouble(proxy.getProperty("playbackSpeed"));
+            player.setPlaybackParameters(new PlaybackParameters(speed));
+        }
+
+        // repeat/loop
+        if (TiConvert.toBoolean(proxy.getProperty("repeat"), false)) {
+            player.setRepeatMode(Player.REPEAT_MODE_ALL);
         }
 
         player.addListener(this);
+
+        // autoplay + url
+        boolean autoplay = TiConvert.toBoolean(proxy.getProperty("autoplay"), false);
+        player.setPlayWhenReady(autoplay);
+
+        if (proxy.hasPropertyAndNotNull("url")) {
+            setMediaItem(TiConvert.toString(proxy.getProperty("url")));
+        }
     }
+
+    // ─── Player.Listener ──────────────────────────────────────────────────────
 
     @Override
     public void onMediaMetadataChanged(@NonNull MediaMetadata mediaMetadata) {
         Player.Listener.super.onMediaMetadataChanged(mediaMetadata);
         KrollDict kd = new KrollDict();
-
         if (mediaMetadata.artist != null) kd.put("album", mediaMetadata.artist);
         if (mediaMetadata.title != null) kd.put("title", mediaMetadata.title);
         if (mediaMetadata.albumTitle != null) kd.put("albumTitle", mediaMetadata.albumTitle);
         if (mediaMetadata.albumArtist != null) kd.put("albumArtist", mediaMetadata.albumArtist);
-        if (mediaMetadata.artworkUri != null)
-            kd.put("artworkUrl", mediaMetadata.artworkUri.toString());
-            /*if (mediaMetadata.artworkData != null) {
-                kd.put("artwork", TiConvert.toBlob(mediaMetadata.artworkData));
-            }*/
-
+        if (mediaMetadata.artworkUri != null) kd.put("artworkUrl", mediaMetadata.artworkUri.toString());
         fireEvent("metaData", kd);
     }
 
@@ -145,21 +209,34 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
     }
 
     @Override
-    public void onEvents(@NonNull Player player, @NonNull Player.Events events) {
-        Player.Listener.super.onEvents(player, events);
-    }
-
-    @Override
     public void onIsPlayingChanged(boolean isPlaying) {
         Player.Listener.super.onIsPlayingChanged(isPlaying);
+        this.isPlaying = isPlaying;
         KrollDict kd = new KrollDict();
         kd.put("state", TiExoPlayerModule.STATE_PLAYING);
-        this.isPlaying = isPlaying;
+        kd.put("playing", isPlaying);
         fireEvent("playerState", kd);
+
+        // Start/stop progress ticker
+        progressHandler.removeCallbacks(progressRunnable);
+        if (isPlaying) {
+            progressHandler.post(progressRunnable);
+        }
     }
 
     @Override
-    public void onPositionDiscontinuity(@NonNull Player.PositionInfo oldPosition, @NonNull Player.PositionInfo newPosition, int reason) {
+    public void onPlayerError(@NonNull PlaybackException error) {
+        Player.Listener.super.onPlayerError(error);
+        KrollDict kd = new KrollDict();
+        kd.put("code", error.errorCode);
+        kd.put("message", error.getMessage() != null ? error.getMessage() : "Unknown error");
+        kd.put("cause", error.getCause() != null ? error.getCause().getMessage() : "Unknown");
+        fireEvent("error", kd);
+    }
+
+    @Override
+    public void onPositionDiscontinuity(@NonNull Player.PositionInfo oldPosition,
+                                        @NonNull Player.PositionInfo newPosition, int reason) {
         Player.Listener.super.onPositionDiscontinuity(oldPosition, newPosition, reason);
         KrollDict kd = new KrollDict();
         kd.put("oldPosition", oldPosition.positionMs);
@@ -167,16 +244,12 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
         fireEvent("seek", kd);
     }
 
-    @Override
-    public void processProperties(KrollDict d) {
-        super.processProperties(d);
-    }
+    // ─── Public API ───────────────────────────────────────────────────────────
 
     public void setMediaItem(String url) {
         mediaUrl = url;
         if (player != null) {
-            MediaItem mediaItem = MediaItem.fromUri(mediaUrl);
-            player.setMediaItem(mediaItem);
+            player.setMediaItem(MediaItem.fromUri(mediaUrl));
             player.prepare();
             shouldPrepare = false;
         }
@@ -185,6 +258,7 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
     public void play() {
         if (shouldPrepare) {
             player.prepare();
+            shouldPrepare = false;
         }
         player.play();
     }
@@ -192,14 +266,65 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
     public void stop() {
         player.stop();
         shouldPrepare = true;
+        progressHandler.removeCallbacks(progressRunnable);
     }
 
     public void pause() {
         player.pause();
+        progressHandler.removeCallbacks(progressRunnable);
     }
 
     public void release() {
+        progressHandler.removeCallbacks(progressRunnable);
         player.release();
+    }
+
+    public void setVolume(float vol) {
+        player.setVolume(Math.max(0f, Math.min(1f, vol)));
+    }
+
+    public float getVolume() {
+        return player.getVolume();
+    }
+
+    public void setMuted(boolean muted) {
+        player.setVolume(muted ? 0f : 1f);
+    }
+
+    public boolean getMuted() {
+        return player.getVolume() == 0f;
+    }
+
+    public void setPlaybackSpeed(float speed) {
+        player.setPlaybackParameters(new PlaybackParameters(speed));
+    }
+
+    public float getPlaybackSpeed() {
+        return player.getPlaybackParameters().speed;
+    }
+
+    public void setRepeat(boolean repeat) {
+        player.setRepeatMode(repeat ? Player.REPEAT_MODE_ALL : Player.REPEAT_MODE_OFF);
+    }
+
+    public boolean getRepeat() {
+        return player.getRepeatMode() == Player.REPEAT_MODE_ALL;
+    }
+
+    public void setScalingMode(int mode) {
+        playerView.setResizeMode(mode);
+    }
+
+    public int getScalingMode() {
+        return playerView.getResizeMode();
+    }
+
+    public void setShowControls(boolean show) {
+        playerView.setUseController(show);
+    }
+
+    public boolean getShowControls() {
+        return playerView.isControllerFullyVisible();
     }
 
     public long currentPosition() {
@@ -208,11 +333,7 @@ public class ExoPlayerView extends TiUIView implements Player.Listener {
 
     public long duration() {
         long duration = player.getDuration();
-        if (duration == C.TIME_UNSET) {
-            return -1;
-        } else {
-            return player.getDuration();
-        }
+        return duration == C.TIME_UNSET ? -1 : duration;
     }
 
     public void seekTo(int value) {
